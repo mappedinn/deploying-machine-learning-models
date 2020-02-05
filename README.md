@@ -83,6 +83,11 @@ The outcome of definition of the modules, there are 2 modules:
 * gets connected to a DB to pull some features.
 * does NLP processing to get the bag of words (our features)
 
+## 5. Different ways to set the version of a package
+
+Ref: [https://packaging.python.org/guides/single-sourcing-package-version/](https://packaging.python.org/guides/single-sourcing-package-version/)
+
+
 
 
 

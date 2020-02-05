@@ -3,8 +3,11 @@ import math
 from regression_model.predict import make_prediction
 from regression_model.processing.data_management import load_dataset
 
+from regression_model.config import logging_config
+_logger = logging_config.get_logger(__name__)
 
 def test_make_single_prediction():
+    _logger.info('**test_make_single_prediction') 
     # Given
     test_data = load_dataset(file_name='test.csv')
     single_test_json = test_data[0:1].to_json(orient='records')
@@ -16,9 +19,11 @@ def test_make_single_prediction():
     assert subject is not None
     assert isinstance(subject.get('predictions')[0], float)
     assert math.ceil(subject.get('predictions')[0]) == 112476
+    
 
 
 def test_make_multiple_predictions():
+    _logger.info('**test_make_multiple_predictions') 
     # Given
     test_data = load_dataset(file_name='test.csv')
     original_data_length = len(test_data)
