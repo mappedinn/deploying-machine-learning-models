@@ -63,5 +63,26 @@ As it can be seen, there is one ignore::FutureWarning that it would be better if
 import joblib
 ```
 
+## 4. Processors (i.e. transformers)
+
+A pipeline contains always:
+* a set of transformers
+* one and only one predictor (which is the `Lasso` in this example of ML algorithm).
+
+The predictor will not be addressed in this section. In stead, the transformers are being addressed.
+
+All the transformers were defined in the the `regression_model.processing.preprocessors`. In order to follow the recommended way of defining the transformer, it would be better to get:
+* the transformation of the features (_in the course, it is being called feature engineering when dealing with log transformations of numerical variables_) (for me the terminology does not sounds correct. In fact, all the explicative variables are considered to be features.)
+* the transformation of categorical variables (_as it was done in the course_)
+
+The outcome of definition of the modules, there are 2 modules:
+* `regression_model.processing.preprocessors`
+* `regression_model.processing.features`
+
+**PS:** `regression_model.processing.features` could be a module that: 
+* gets connected to a DB to pull some features.
+* does NLP processing to get the bag of words (our features)
+
+
 
 
