@@ -1,0 +1,6 @@
+# api
+flask==1.1.1
+
+# local regression_model package
+# update with your local path
+-e "packages/regression_model" 

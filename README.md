@@ -321,3 +321,68 @@ Please be noticed that the package `regression_model` is not located in the `env
 # wrapt              1.11.2
 # zipp               2.1.0
 ```
+
+## 6. Creation of a RESTful API for serving the ML algorithm
+
+**Steps:**
+* Installation of `flask` though setting up the requirements.txt file as follows:
+```py
+# api
+flask==1.1.1
+
+# local regression_model package
+# update with your local path
+-e "packages/regression_model" 
+```
+* Creation of a web application controller as follows:
+
+```py
+# packages/ml_api/api/controller.py
+from flask import Blueprint, request
+
+prediction_app = Blueprint('prediction_app', __name__)
+
+@prediction_app.route('/', methods=['GET'])
+def home():
+    if request.method == 'GET':
+        return 'Landing page of the ML API'
+
+@prediction_app.route('/health', methods=['GET'])
+def health():
+    if request.method == 'GET':
+        return 'ok'
+
+```
+* Creation of a Flask application as follows:
+```py
+from flask import Flask
+
+
+def create_app() -> Flask:
+    """Create a flask app instance."""
+
+    flask_app = Flask('ml_api')
+
+    # import blueprints
+    from api.controller import prediction_app
+    flask_app.register_blueprint(prediction_app)
+
+    return flask_app
+```
+* The main application
+
+```py
+#  packages/ml_api/run.py
+from api.app import create_app
+
+application = create_app()
+
+if __name__ == '__main__':
+    application.run()
+```
+
+* Serving the flask application
+
+```sh
+python packages/ml_api/run.py
+```
