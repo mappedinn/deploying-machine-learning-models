@@ -386,3 +386,71 @@ if __name__ == '__main__':
 ```sh
 python packages/ml_api/run.py
 ```
+
+## 7. Prediction end point of the REST API
+
+```py
+# packages/ml_api/api/controller.py
+# ...
+@prediction_app.route('/v1/predict/regression', methods=['POST'])
+def predict():
+    if request.method == 'POST':
+        json_data = request.get_json()
+        _logger.info(f'Inputs: {json_data}')
+
+        result = make_prediction(input_data=json_data)
+        _logger.info(f'Outputs: {result}')
+
+        predictions = result.get('predictions')[0]
+        version = result.get('version')
+
+        return jsonify({'predictions': predictions,
+                        'version': version})
+```
+
+## 8. Testing the prediction end point of the REST API
+
+```py
+# packages/ml_api/tests/test_controller.py
+# ...
+def test_prediction_endpoint_returns_prediction(flask_test_client):
+    # Given
+    # Load the test data from the regression_model package
+    # This is important as it makes it harder for the test
+    # data versions to get confused by not spreading it
+    # across packages.
+    test_data = load_dataset(file_name=model_config.TESTING_DATA_FILE)
+    post_json = test_data[0:1].to_json(orient='records')
+
+    # When
+    response = flask_test_client.post('/v1/predict/regression',
+                                      json=post_json)
+
+    # Then
+    assert response.status_code == 200
+    response_json = json.loads(response.data)
+    prediction = response_json['predictions']
+    response_version = response_json['version']
+    assert math.ceil(prediction) == 112476
+    assert response_version == _version
+```
+
+```sh
+(env) C:\Users\999138\Documents\ME\udemy-deploying-machine-learning-models>pytest packages\ml_api\tests
+# ========================================================================================== test session starts ==========================================================================================
+# platform win32 -- Python 3.7.6, pytest-5.3.5, py-1.8.1, pluggy-0.13.1
+# rootdir: C:\Users\999138\Documents\ME
+# collected 2 items
+
+# packages\ml_api\tests\test_controller.py ..                                                [100%]
+
+# =========================================================================================== warnings summary ============================================================================================
+# udemy-deploying-machine-learning-models/packages/ml_api/tests/test_controller.py::test_health_endpoint_returns_200
+#   C:\ProgramData\Anaconda3\lib\importlib\_bootstrap.py:219: RuntimeWarning: numpy.ufunc size changed, may indicate binary incompatibility. Expected 192 from C header, got 216 from PyObject
+#     return f(*args, **kwds)
+
+# -- Docs: https://docs.pytest.org/en/latest/warnings.html
+# ===================================================================================== 2 passed, 1 warning in 1.20s ======================================================================================
+```
+
+It seems to be that an older version of `numpy` should be considered.
