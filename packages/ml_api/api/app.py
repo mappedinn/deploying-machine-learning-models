@@ -14,6 +14,6 @@ def create_app(*, config_object) -> Flask:
     # import blueprints
     from api.controller import prediction_app
     flask_app.register_blueprint(prediction_app)
-    _logger.debug('Application instance created')
+    _logger.info('Application instance created')
 
     return flask_app
